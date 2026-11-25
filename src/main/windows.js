@@ -23,10 +23,12 @@ function displayFor(win) {
 function clampToWorkArea(bounds, workArea) {
   const rawWidth = Number(bounds.width) || Number(bounds.w) || 0;
   const rawHeight = Number(bounds.height) || Number(bounds.h) || 0;
-  const width = Math.min(rawWidth, workArea.width - 8);
-  const height = Math.min(rawHeight, workArea.height - 12);
-  const x = Math.round(workArea.x + (workArea.width - width) / 2);
-  const y = workArea.y + 8;
+  const area = workArea && Number(workArea.width) > 0 && Number(workArea.height) > 0
+    ? workArea : { x: 0, y: 0, width: Math.max(rawWidth, 800), height: Math.max(rawHeight, 600) };
+  const width = Math.max(1, Math.min(rawWidth, area.width - 8));
+  const height = Math.max(1, Math.min(rawHeight, area.height - 12));
+  const x = Math.round(area.x + (area.width - width) / 2);
+  const y = area.y + 8;
   return { x, y, width, height };
 }
 
@@ -68,6 +70,11 @@ function createIslandWindow({ preload, dev = false }) {
   win.setAlwaysOnTop(true, 'screen-saver');
   win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   win.setMenu?.(null);
+  try {
+    win.on('show', () => console.log('[aether] island shown'));
+    win.on('hide', () => console.log('[aether] island hidden'));
+    win.on('closed', () => console.log('[aether] island closed'));
+  } catch {}
   win.loadFile(path.join(__dirname, '..', 'renderer', 'island', 'index.html'));
   currentMode.set(win, 'collapsed');
   if (dev) win.webContents.openDevTools({ mode: 'detach' });

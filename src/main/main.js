@@ -14,6 +14,10 @@ const { registerIpc } = require('./ipc');
 const { startAmbientLoop } = require('./glass');
 const { clipboard } = require('electron');
 
+if (process.platform === 'win32') {
+  try { app.setAppUserModelId('com.aether.island'); } catch {}
+}
+
 const argv = new Set(process.argv.slice(app.isPackaged ? 1 : 2));
 const DEMO = argv.has('--demo');
 const SMOKE = argv.has('--smoke');
@@ -32,9 +36,11 @@ let clipboardTimer = null;
 let lastClipboardText = '';
 let quitting = false;
 
+dbgLog(`boot: pid=${process.pid} argv=${JSON.stringify(process.argv)}`);
 const gotLock = app.requestSingleInstanceLock();
+dbgLog(`single-instance lock=${gotLock}`);
 if (!gotLock) {
-  app.quit();
+  setTimeout(() => { if (islandWindow) { islandWindow.show(); islandWindow.focus(); } }, 1500);
 } else {
   app.on('second-instance', () => {
     if (islandWindow && !islandWindow.isDestroyed()) {
@@ -46,7 +52,6 @@ if (!gotLock) {
 
 function userDataPath(name) {
   const dir = app.getPath('userData');
-  app.setAppUserModelId?.('com.aether.island');
   return path.join(dir, name);
 }
 
@@ -251,7 +256,21 @@ function openSettings() {
   settingsWindow.on('closed', () => { settingsWindow = undefined; });
 }
 
+// --- startup diagnostics (writes to %APPDATA%/aether-island/start-log.txt) ---
+function dbgLog(msg) {
+  try {
+    const fs = require('node:fs');
+    const dir = app.getPath('userData');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.appendFileSync(path.join(dir, 'start-log.txt'), `${new Date().toISOString()} ${msg}
+`);
+  } catch {}
+}
+process.on('uncaughtException', (err) => { try { dbgLog(`uncaughtException: ${err && err.stack || err}`); } catch {} });
+process.on('unhandledRejection', (err) => { try { dbgLog(`unhandledRejection: ${err && (err.stack || err.message) || err}`); } catch {} });
+
 app.whenReady().then(() => {
+  dbgLog('whenReady fired');
   store = createSettingsStore({
     filePath: userDataPath('settings.json'),
     safeStorage: require('electron').safeStorage,
@@ -284,7 +303,9 @@ app.whenReady().then(() => {
     onState: (payload) => islandWindow?.webContents.send('lyrics:state', payload),
   });
 
+  dbgLog('services ready, opening windows');
   createWindows();
+  dbgLog('windows created');
   wireMedia();
   registerIpc({
     windows: {
