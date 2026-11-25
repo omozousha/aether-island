@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'">
+  <meta name="color-scheme" content="dark">
+  <title>Pengaturan · Aether Island</title>
+  <link rel="stylesheet" href="../shared/glass.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="settings-window glass" id="root">
+    <header class="win-head">
+      <div class="brand"><span class="brand-orb"><i></i></span><div class="brand-copy"><b>AETHER</b><small>ISLAND · PENGATURAN</small></div></div>
+      <button class="icon-button" id="closeButton" aria-label="Tutup"><svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+    </header>
+
+    <nav class="settings-nav" id="nav">
+      <button class="nav-item active" data-section="ai">✳ AI</button>
+      <button class="nav-item" data-section="appearance">◑ Tampilan</button>
+      <button class="nav-item" data-section="hotkeys">⌨ Hotkey</button>
+      <button class="nav-item" data-section="lyrics">♫ Lirik</button>
+      <button class="nav-item" data-section="tools">⚙ Tools</button>
+      <button class="nav-item" data-section="about">ⓘ Tentang</button>
+    </nav>
+
+    <section class="settings-body" id="body">
+      <!-- AI -->
+      <div class="section active" data-section="ai">
+        <h2>Asisten AI</h2>
+        <p class="lead">Satu API key AI Gater untuk semua fitur. Key disimpan terenkripsi di mesin ini.</p>
+
+        <div class="field">
+          <label for="apiKey">API Key AI Gater</label>
+          <div class="row">
+            <input type="password" id="apiKey" autocomplete="off" placeholder="Bearer token…">
+            <button class="pill-button" id="toggleKey" type="button">👁</button>
+          </div>
+          <div class="hint-row">
+            <span class="hint">Base URL <code>https://api.aigate.shop/v1</code></span>
+            <span class="status" id="keyStatus">—</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="modelSelect">Model</label>
+          <div class="row">
+            <select id="modelSelect"><option value="">memuat…</option></select>
+            <button class="pill-button" id="refreshModels" type="button">↻</button>
+          </div>
+          <small class="muted" id="modelHint">Daftar model diambil dari <code>/models</code>.</small>
+        </div>
+
+        <div class="field">
+          <label>Kepribadian</label>
+          <div class="segmented" id="personality">
+            <button data-value="ringkas">Ringkas</button>
+            <button data-value="santai">Santai</button>
+            <button data-value="formal">Formal</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Bahasa jawaban</label>
+          <div class="segmented" id="language">
+            <button data-value="id">Indonesia</button>
+            <button data-value="en">English</button>
+          </div>
+        </div>
+
+        <div class="field switch-row">
+          <div><label>Aktifkan AI</label><small class="muted">Matikan untuk menonaktifkan seluruh asisten</small></div>
+          <button class="switch" id="aiEnabled" role="switch" aria-checked="false"></button>
+        </div>
+
+        <div class="row end">
+          <button class="pill-button accent" id="testConnection" type="button">Tes koneksi</button>
+          <span class="status" id="testStatus">belum diuji</span>
+        </div>
+      </div>
+
+      <!-- APPEARANCE -->
+      <div class="section" data-section="appearance">
+        <h2>Tampilan</h2>
+        <p class="lead">Liquid glass yang mengikuti warna layar di sekitarmu.</p>
+
+        <div class="field">
+          <label>Aksen</label>
+          <div class="swatches" id="accentSwatches">
+            <button class="swatch" data-value="#9f84ff" style="--c:#9f84ff"></button>
+            <button class="swatch" data-value="#64d8d6" style="--c:#64d8d6"></button>
+            <button class="swatch" data-value="#ff8fb1" style="--c:#ff8fb1"></button>
+            <button class="swatch" data-value="#ffd166" style="--c:#ffd166"></button>
+            <button class="swatch" data-value="#5eead4" style="--c:#5eead4"></button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Opasitas</label>
+          <input type="range" id="windowOpacity" min="0.35" max="1" step="0.05" value="1">
+          <small class="muted" id="opacityValue">100%</small>
+        </div>
+
+        <div class="field">
+          <label>Kekuatan blur</label>
+          <input type="range" id="windowBlur" min="0" max="60" step="2" value="30">
+          <small class="muted" id="blurValue">30</small>
+        </div>
+
+        <div class="field switch-row">
+          <div><label>Sembunyikan otomatis saat kehilangan fokus</label><small class="muted">Panel kembali jadi pil saat klik di luar</small></div>
+          <button class="switch" id="autoCollapse" role="switch" aria-checked="true"></button>
+        </div>
+
+        <div class="field switch-row">
+          <div><label>Tampilkan album art</label><small class="muted">Sembunyikan untuk tampilan lebih minimal</small></div>
+          <button class="switch" id="showAlbumArt" role="switch" aria-checked="true"></button>
+        </div>
+      </div>
+
+      <!-- HOTKEYS -->
+      <div class="section" data-section="hotkeys">
+        <h2>Hotkey global</h2>
+        <p class="lead">Tombol ini aktif walau Aether Island tak terlihat.</p>
+        <div class="field"><label>Ganti ukuran panel</label><input type="text" id="hotkeyToggle"></div>
+        <div class="field"><label>Panggil Asisten AI</label><input type="text" id="hotkeyAi"></div>
+        <div class="field"><label>Panggil Lirik</label><input type="text" id="hotkeyLyrics"></div>
+        <div class="field"><label>Sembunyikan</label><input type="text" id="hotkeyHide"></div>
+        <div class="row end">
+          <button class="pill-button" id="saveHotkeys" type="button">Simpan hotkey</button>
+          <span class="status" id="hotkeyStatus">—</span>
+        </div>
+        <small class="muted">Gunakan format Electron, mis. <code>Alt+Shift+Space</code>. Kosongkan untuk mematikan.</small>
+      </div>
+
+      <!-- LYRICS -->
+      <div class="section" data-section="lyrics">
+        <h2>Lirik</h2>
+        <p class="lead">Lirik tersinkron dari Windows SMTC dan LRCLIB.</p>
+
+        <div class="field switch-row">
+          <div><label>Aktifkan lirik</label><small class="muted">Ambil lirik otomatis saat musik diputar</small></div>
+          <button class="switch" id="lyrics" role="switch" aria-checked="true"></button>
+        </div>
+
+        <div class="field">
+          <label>Terjemahan otomatis</label>
+          <div class="segmented" id="translationTarget">
+            <button data-value="off">Mati</button>
+            <button data-value="id">Indonesia</button>
+            <button data-value="en">English</button>
+          </div>
+          <small class="muted">Saat panel lirik terbuka, terjemahan mengisi baris aktif.</small>
+        </div>
+
+        <div class="field">
+          <label>Koreksi sinkron (ms)</label>
+          <div class="row">
+            <input type="range" id="lyricsOffsetMs" min="-3000" max="3000" step="100" value="0">
+            <span class="offset-value" id="offsetLabel">0 ms</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="section" data-section="tools">
+        <h2>Tools</h2>
+        <p class="lead">Clipboard history dan monitor sistem.</p>
+
+        <div class="field switch-row">
+          <div><label>Riwayat clipboard</label><small class="muted">Rekam teks yang kamu salin</small></div>
+          <button class="switch" id="clipboardHistory" role="switch" aria-checked="true"></button>
+        </div>
+
+        <div class="field switch-row">
+          <div><label>Tampilkan baterai</label><small class="muted">Gauge baterai di tab Tools</small></div>
+          <button class="switch" id="showBattery" role="switch" aria-checked="true"></button>
+        </div>
+
+        <div class="row end">
+          <button class="pill-button danger" id="clearClips" type="button">Kosongkan clipboard</button>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="section" data-section="about">
+        <h2>Tentang</h2>
+        <div class="about-card">
+          <span class="about-name">Aether Island</span>
+          <span class="about-version" id="appVersion">—</span>
+          <span class="about-line">Dynamic island untuk Windows 11 dengan AI Gater, lirik sinkron, dan liquid glass.</span>
+          <span class="about-line muted" id="platformLine">—</span>
+        </div>
+        <div class="row end">
+          <button class="pill-button" id="openGitHub" type="button">Repositori</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="renderer.js"></script>
+</body>
+</html>
