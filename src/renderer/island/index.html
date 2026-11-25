@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'">
+  <meta name="color-scheme" content="dark">
+  <title>Aether Island</title>
+  <link rel="stylesheet" href="../shared/glass.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="island glass" id="island">
+    <div class="aurora a1"></div>
+    <div class="aurora a2"></div>
+
+    <!-- COLLAPSED PILL -->
+    <section class="compact" id="compact">
+      <button class="art-chip" id="expandButton" aria-label="Buka panel">
+        <img id="compactArt" alt="" hidden>
+        <span class="art-orb" id="compactOrb"><i></i></span>
+      </button>
+      <button class="compact-copy" id="compactCopy">
+        <span class="compact-title" id="compactTitle">Halo, BOZ</span>
+        <span class="compact-sub" id="compactSub">AI &amp; lirik siap</span>
+      </button>
+      <div class="compact-transport">
+        <button class="icon-button small" id="compactPrev" aria-label="Sebelumnya">
+          <svg viewBox="0 0 24 24"><path d="M18 16V8m-8 0 6 4-6 4z"/></svg>
+        </button>
+        <button class="icon-button small play" id="compactPlay" aria-label="Putar / Jeda">
+          <svg class="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7z"/></svg>
+          <svg class="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>
+        </button>
+        <button class="icon-button small" id="compactNext" aria-label="Berikutnya">
+          <svg viewBox="0 0 24 24"><path d="M6 8v8m8-8-6 4 6 4z"/></svg>
+        </button>
+      </div>
+      <button class="ai-chip" id="compactAi" aria-label="Tanya AI" title="Tanya AI (Alt+Shift+Space)">
+        <span class="spark">✳</span>
+      </button>
+      <div class="compact-progress"><div id="compactFill"></div></div>
+    </section>
+
+    <!-- EXPANDED PANEL -->
+    <section class="panel" id="panel" aria-hidden="true">
+      <header class="panel-head">
+        <div class="brand">
+          <span class="brand-orb"><i></i></span>
+          <div class="brand-copy"><b>AETHER</b><small>ISLAND</small></div>
+        </div>
+        <div class="head-actions">
+          <span class="status-badge" id="statusBadge"><i></i><span>SIAP</span></span>
+          <button class="icon-button" id="settingsButton" aria-label="Pengaturan" title="Pengaturan">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M4.3 4.9l1.7 1.7M18 17.4l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.9 19.1l1.7-1.7M18 6.6l1.7-1.7"/></svg>
+          </button>
+          <button class="icon-button" id="collapseButton" aria-label="Kecilkan" title="Kecilkan (Esc)">
+            <svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="media-card" id="mediaCard">
+        <div class="media-art" id="mediaArt">
+          <img id="panelArt" alt="" hidden>
+          <span class="orb-fallback"><i></i></span>
+        </div>
+        <div class="media-copy">
+          <span class="eyebrow" id="panelEyebrow">SEKARANG DIPUTAR</span>
+          <h1 id="panelTitle">Tak ada yang diputar</h1>
+          <p id="panelArtist">Mulai musik di browser atau Spotify</p>
+          <div class="seek-row">
+            <input type="range" id="seek" min="0" max="100" step="1" value="0" aria-label="Posisi lagu">
+            <div class="time-row"><span id="elapsed">0:00</span><span id="duration">0:00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="tabs" aria-label="Fitur">
+        <button class="tab active" data-tab="lyrics"><span class="t-glyph">♫</span> Lirik</button>
+        <button class="tab" data-tab="ai"><span class="t-glyph">✳</span> AI</button>
+        <button class="tab" data-tab="tools"><span class="t-glyph">◫</span> Tools</button>
+        <span class="model-pill" id="modelPill" title="Model AI Gater aktif">—</span>
+      </nav>
+
+      <!-- LYRICS TAB -->
+      <section class="view" id="viewLyrics">
+        <div class="lyrics-head">
+          <div><span class="eyebrow">IKUTI IRAMANYA</span><h2>Lirik lagu</h2></div>
+          <div class="lyrics-tools">
+            <button class="chip" id="offsetMinus" title="Geser -0.5s">−0.5s</button>
+            <span class="offset-value" id="offsetValue">0.0s</span>
+            <button class="chip" id="offsetPlus" title="Geser +0.5s">+0.5s</button>
+            <button class="chip" id="translateButton" title="Terjemahkan via AI">⇄ Terjemah</button>
+            <button class="chip" id="refreshLyrics" title="Cari ulang lirik">↻</button>
+          </div>
+        </div>
+        <div class="lyrics-scroll" id="lyricsScroll">
+          <div class="lyrics-empty">
+            <span class="glyph">♫</span>
+            <p>Lirik muncul otomatis saat musik diputar</p>
+            <small>Chrome · Edge · Spotify · YouTube Music</small>
+          </div>
+        </div>
+        <div class="lyrics-foot" id="lyricsFoot">Powered by LRCLIB</div>
+      </section>
+
+      <!-- AI TAB -->
+      <section class="view" id="viewAi" hidden>
+        <div class="ai-head">
+          <div><span class="eyebrow">PIKIRANMU, DIPERLUAS</span><h2>Asisten AI</h2></div>
+          <div class="ctx-chips">
+            <button class="chip on" id="ctxTrack" title="Lampirkan info lagu">♫ Lagu</button>
+            <button class="chip" id="ctxClipboard" title="Lampirkan clipboard">📋 Clipboard</button>
+            <button class="chip" id="ctxSystem" title="Lampirkan status sistem">⚙ Sistem</button>
+          </div>
+        </div>
+        <div class="chat-scroll" id="chatScroll">
+          <div class="chat-welcome">
+            <span class="welcome-spark">✳</span>
+            <p>Hai, aku Aether. Apa yang bisa kubantu?</p>
+            <small>Didukung AI Gater · streaming langsung</small>
+          </div>
+        </div>
+        <div class="quick-row" id="quickRow"></div>
+        <form class="composer" id="composer">
+          <textarea id="chatInput" rows="1" placeholder="Tanya apa saja… /ringkas" maxlength="6000" aria-label="Pesan untuk AI"></textarea>
+          <button type="submit" class="send-button" id="sendButton" aria-label="Kirim">
+            <svg viewBox="0 0 24 24"><path d="m5 12 14-7-4 14-3.2-6.2L5 12Z"/></svg>
+          </button>
+          <button type="button" class="send-button stop" id="stopButton" aria-label="Stop" hidden>
+            <svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
+          </button>
+        </form>
+      </section>
+
+      <!-- TOOLS TAB -->
+      <section class="view" id="viewTools" hidden>
+        <div class="tools-head">
+          <div><span class="eyebrow">OVERPOWER HARIAN</span><h2>Tools</h2></div>
+          <span class="sys-note" id="sysNote">—</span>
+        </div>
+        <div class="gauges" id="gauges">
+          <div class="gauge" data-gauge="cpu"><svg viewBox="0 0 44 44"><circle class="g-track" cx="22" cy="22" r="18"/><circle class="g-fill" cx="22" cy="22" r="18"/></svg><div class="g-copy"><b id="gCpu">—</b><small>CPU</small></div></div>
+          <div class="gauge" data-gauge="mem"><svg viewBox="0 0 44 44"><circle class="g-track" cx="22" cy="22" r="18"/><circle class="g-fill" cx="22" cy="22" r="18"/></svg><div class="g-copy"><b id="gMem">—</b><small>RAM</small></div></div>
+          <div class="gauge" data-gauge="disk"><svg viewBox="0 0 44 44"><circle class="g-track" cx="22" cy="22" r="18"/><circle class="g-fill" cx="22" cy="22" r="18"/></svg><div class="g-copy"><b id="gDisk">—</b><small>DISK</small></div></div>
+          <div class="gauge" data-gauge="bat"><svg viewBox="0 0 44 44"><circle class="g-track" cx="22" cy="22" r="18"/><circle class="g-fill" cx="22" cy="22" r="18"/></svg><div class="g-copy"><b id="gBat">—</b><small>BATERAI</small></div></div>
+        </div>
+        <div class="actions-grid" id="actionsGrid"></div>
+        <div class="clips-head">
+          <span class="eyebrow">CLIPBOARD</span>
+          <div class="clips-actions">
+            <input type="text" id="clipSearch" placeholder="Cari…" aria-label="Cari clipboard">
+            <button class="chip danger" id="clipClear">Bersihkan</button>
+          </div>
+        </div>
+        <div class="clips-list" id="clipsList">
+          <div class="clips-empty">Belum ada clipboard</div>
+        </div>
+      </section>
+
+      <footer class="panel-foot">
+        <span><i class="foot-dot"></i> SELALU DI SISI KAMU</span>
+        <span class="foot-hint">ESC kecil · ganda sembunyi</span>
+      </footer>
+    </section>
+  </main>
+  <script src="renderer.js"></script>
+</body>
+</html>
